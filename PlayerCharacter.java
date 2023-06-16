@@ -45,7 +45,8 @@ public class PlayerCharacter {
 	int atk, dfs, mna;
 	int baseatk, basedfs, basemna;
 	int invicibilityDuration;
-	int shld;
+	boolean isAvailable = true;
+	//int shld;
 	Classes type;
 	boolean isSkillRcg = true;
 	int skillCD;
@@ -186,6 +187,9 @@ public class PlayerCharacter {
 				case ARCHER:
 					multiplier = 1.50;
 					break;
+				case CASTER:
+					multiplier = 1.25;
+					break;
 				case LANCER:
 					multiplier = 0.50;
 					break;
@@ -243,12 +247,12 @@ public class PlayerCharacter {
 		return multiplier;
 	}
 	
-	public void skill(ArrayList<PlayerCharacter> aliveAllies) {
+	public void skill(ArrayList<PlayerCharacter> aliveAllies) { // enemies to use skill
 		System.out.println("=== "+this.name+" uses " + this.skill + "!");
 		
 		switch (this.skill) {
 			case CLARENT:
-				for (int i=0; i<aliveAllies.size(); i++) { // AoE dmg on allies
+				for (int i=0; i<aliveAllies.size(); i++) { // AoE dmg 
 					if (!aliveAllies.get(i).isInvincible) {
 						int dmg = (int) (this.atk * (double) (1.00-(Double.valueOf(aliveAllies.get(i).dfs) /100.00)) * ( (double) aliveAllies.get(i).calculateDMG(this)));
 						aliveAllies.get(i).hp -= dmg;
@@ -279,7 +283,7 @@ public class PlayerCharacter {
 				this.hp += 250;
 				break;
 			
-			case INVINCIBILITY_TEMP:
+			case INVINCIBILITY_TEMP: // sets temporary invincibility
 				this.isInvincible = true;
 				this.invicibilityDuration = 2;
 				break;
@@ -289,7 +293,7 @@ public class PlayerCharacter {
 		}
 	}
 	
-	public void attack(ArrayList<PlayerCharacter> aliveAllies) {
+	public void attack(ArrayList<PlayerCharacter> aliveAllies) { // for enemies to attack allies
 		int rand = GameLevel.Rand.nextInt(0, aliveAllies.size());
 		
 		PlayerCharacter target = aliveAllies.get(rand);

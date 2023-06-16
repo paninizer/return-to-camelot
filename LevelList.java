@@ -9,7 +9,7 @@ public class LevelList {
 			this.levels = new GameLevel[100];
 			
 			for (int i=0; i<10; i++) {
-				for (int j=0; j<10; j++) { // each large section has 10 smaller levels!
+				for (int j=0; j<10; j++) { // each large section (world) has 10 smaller levels!
 					String act = "Act " + i + ": Level " + j;
 					if (i==9&&j==9) {
 						levels[(i*10)+j] = new GameLevel(act, i, true);

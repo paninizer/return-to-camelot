@@ -34,10 +34,7 @@ public class MainGame {
 		
 		player.characters = new PlayerCharacter[4];
 		player.current = new GameLevel();
-		player.isGenocide = false;
-		player.isPacifist = false;
-		
-		chooseCharacters();
+		//chooseCharacters(); // moved to gamelevel file
 		
 		runGame();
 		
@@ -143,10 +140,10 @@ public class MainGame {
 		choice[0][2] = new PlayerCharacter("King Arthur (archer)", 150, 175, 15, 450, Skills.HOLY_HAND_GRENADE, Classes.ARCHER);		
 		choice[0][3] = new PlayerCharacter("King Arthur (cavalry)", 250, 125, 35, 250, Skills.RHONGOMYNIAD_CHARGE, Classes.CAVALRY);
 		
-		choice[1][0] = new PlayerCharacter("Merlin", 150, 50, 25, 1500, Skills.AVALON, Classes.CASTER);		
-		choice[1][1] = new PlayerCharacter("Morgan", 150, 100, 5, 750, Skills.CURSED_ONSET, Classes.CASTER);		
-		choice[1][2] = new PlayerCharacter("Merlin (prototype)", 150, 150, 15, 250, Skills.AVALON_PROTO, Classes.CASTER);		
-		choice[1][3] = new PlayerCharacter("Morgan (prototype)", 100, 75, 15, 1000, Skills.CURSED_ONSET_PROTO, Classes.CASTER);		
+		choice[1][0] = new PlayerCharacter("Merlin", 150, 25, 25, 1500, Skills.AVALON, Classes.CASTER);		
+		choice[1][1] = new PlayerCharacter("Morgan", 150, 50, 5, 750, Skills.CURSED_ONSET, Classes.CASTER);		
+		choice[1][2] = new PlayerCharacter("Merlin (prototype)", 150, 50, 15, 250, Skills.AVALON_PROTO, Classes.CASTER);		
+		choice[1][3] = new PlayerCharacter("Morgan (prototype)", 100, 25, 15, 1000, Skills.CURSED_ONSET_PROTO, Classes.CASTER);		
 		
 		choice[2][0] = new PlayerCharacter("Galahad", 350, 75, 30, 200, Skills.CAMELOT_WALL, Classes.SHIELDER);		
 		choice[2][1] = new PlayerCharacter("Bedivere", 200, 75, 20, 350, Skills.UNWAVERING_LOYALTY, Classes.SABER);

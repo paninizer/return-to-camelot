@@ -5,8 +5,8 @@ package unit_16_to_18;
 public class PlayerConfig {
 	PlayerCharacter[] characters;
 	GameLevel current;
-	boolean isGenocide;
-	boolean isPacifist;
+	
+	int levelsCompleted = 0;
 	
 	enum Actions {
 		HEAL,
