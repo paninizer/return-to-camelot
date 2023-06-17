@@ -7,6 +7,6 @@
  
  Go to [Eclipse.org](https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/2023-06/R/eclipse-java-2023-06-R-win32-x86_64.zip) to download the latest Java compiler.
  
- Create a new java project, then create a new package underneath called unit_16_to_18 (or just any package, then quickly fix the errors by clicking on suggestions and fix them)
+ Create a new java project, then create a new package underneath called unit_16_to_18 (or just any package, then quickly fix the errors by clicking on suggestions and fix them later).
  
  Copy the files into the src directory of that project (/src/[project name]). Run and enjoy!
