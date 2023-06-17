@@ -22,7 +22,8 @@ public class GameLevel {
 	String name;
 	boolean isFinished = false;
 	ArrayList<PlayerCharacter> aliveEnemiesChoices = new ArrayList<>();
-	ArrayList<PlayerCharacter> aliveAlliesChoices = new ArrayList<>();
+	ArrayList<PlayerCharacter> aliveAlliesArray = new ArrayList<>();
+	ArrayList<PlayerCharacter> availableAlliesChoices = new ArrayList<>();
 	int round = 1;
 	
 	public GameLevel(String name, int world, boolean isFinal) throws Exception { // normal generation constructor
@@ -35,6 +36,8 @@ public class GameLevel {
 
 				final int classSelection = Rand.nextInt(0, 6);
 				final double multiplier = 1.0 * world + 1;
+				
+				enemy.level = world; //display purposes
 				//handle selections
 				this.handleSelection(enemy, classSelection, multiplier);
 				
@@ -45,7 +48,7 @@ public class GameLevel {
 		} else {
 			this.enemies = new PlayerCharacter[1]; // final boss (Mordred)
 			
-			this.enemies[0] = new PlayerCharacter("Mordred", 15000, 150, 50, 1500, Skills.CLARENT, Classes.SOVEREIGN);
+			this.enemies[0] = new PlayerCharacter("Mordred", 10, 15000, 150, 50, 1500, Skills.CLARENT, Classes.SOVEREIGN);
 			
 			//System.out.println("breakpoint reached");
 		}
@@ -159,7 +162,7 @@ public class GameLevel {
 		System.out.println("Available Choices: ");
 		this.printAllies();
 		
-		System.out.print("Choose a character: ");
+		System.out.print("Choose a character (0-"+ (this.availableAlliesChoices.size()-1) + "): ");
 		//String input = MainGame.br.readLine(); //calls on pre-existing reader to save memory
 		
 		boolean isValidInput = false;
@@ -174,22 +177,22 @@ public class GameLevel {
 				System.out.println("|| Input must be a number!");
 				System.out.println("==========EXCEPTION=========");
 				System.out.println();
-				System.out.print("Choose a character (0-"+ (this.aliveAlliesChoices.size()-1) + "): ");
+				System.out.print("Choose a character (0-"+ (this.availableAlliesChoices.size()-1) + "): ");
 				continue;
 			}
 			selector = Integer.parseInt(input);
 			
-			if (selector<0 || selector>(this.aliveAlliesChoices.size()-1)) { // if not valid
+			if (selector<0 || selector>(this.aliveAlliesArray.size()-1)) { // if not valid
 				System.out.println();
 				System.out.println("==========EXCEPTION=========");
-				System.out.println("|| Input must be at least 0 and no more than "+ (this.aliveAlliesChoices.size()-1));
+				System.out.println("|| Input must be at least 0 and no more than "+ (this.aliveAlliesArray.size()-1));
 				System.out.println("==========EXCEPTION=========");
 				System.out.println();
-				System.out.print("Choose a character (0-"+ (this.aliveAlliesChoices.size()-1) + "): ");		
+				System.out.print("Choose a character (0-"+ (this.availableAlliesChoices.size()-1) + "): ");
 			} else isValidInput = true;
 		}
 		
-		PlayerCharacter character = this.aliveAlliesChoices.get(selector); // prop for func
+		PlayerCharacter character = this.availableAlliesChoices.get(selector); // prop for func
 		
 		ArrayList<String> actionsList = new ArrayList<>();
 		
@@ -206,6 +209,7 @@ public class GameLevel {
 		}
 		
 		isValidInput = false;
+		int actionSelect = 0;
 		while (!isValidInput) {
 			System.out.println("Available actions: ");
 			for (String action : actionsList) {
@@ -219,7 +223,7 @@ public class GameLevel {
 			
 			for (int i=0; i<actionsList.size(); i++) {
 				if (actionsList.get(i).equals(input.toLowerCase())) {
-					selector = i;
+					actionSelect = i;
 					isValidInput = true;
 					break;
 				}
@@ -228,11 +232,15 @@ public class GameLevel {
 			if (!isValidInput) System.out.println("Invalid input, please make sure your input matches one of the options and try again.");
 		}
 		
-		this.handleSelection(actionsList.get(selector), character);      
+		character.isAvailable = false;
+		this.availableAlliesChoices.remove(selector);
+		//System.out.println(character.isAvailable); debug
+		
+		this.handleSelection(actionsList.get(actionSelect), character);      
 
 	}
 	
-	private void handleSelection(String selector, PlayerCharacter character) throws Exception {
+	private void handleSelection(String selector, PlayerCharacter character) throws Exception { // handle selection of actions
 		
 		switch (selector) { // limited options so switch case can be used
 			case "attack":
@@ -257,7 +265,7 @@ public class GameLevel {
 		
 	}
 	
-	private void attack(PlayerCharacter character) throws Exception {
+	private void attack(PlayerCharacter character) throws Exception { // attack the enemy
 		
 		this.printEnemies();
 		
@@ -325,7 +333,7 @@ public class GameLevel {
 
 	}
 	
-	private void skill(PlayerCharacter character) throws Exception {
+	private void skill(PlayerCharacter character) throws Exception { // ally character skill
 		double multiplier = 2.00 + (character.level / 10); // skill multiplier by level
 		
 		System.out.println(character.name+" uses " + character.skill + "!");
@@ -382,8 +390,8 @@ public class GameLevel {
 				}
 				
 				// raise atk & dfs by 5*multiplier
-				for (int i=0; i<this.aliveAlliesChoices.size(); i++) { 
-					PlayerCharacter ally = this.aliveAlliesChoices.get(i);
+				for (int i=0; i<this.aliveAlliesArray.size(); i++) { 
+					PlayerCharacter ally = this.aliveAlliesArray.get(i);
 					
 					ally.atk += 5*multiplier;
 					
@@ -394,8 +402,8 @@ public class GameLevel {
 				break;
 			case UNWAVERING_LOYALTY:
 				// raise atk & dfs by 15*multiplier
-				for (int i=0; i<this.aliveAlliesChoices.size(); i++) { 
-					PlayerCharacter ally = this.aliveAlliesChoices.get(i);
+				for (int i=0; i<this.aliveAlliesArray.size(); i++) { 
+					PlayerCharacter ally = this.aliveAlliesArray.get(i);
 					
 					ally.atk += 15*multiplier;
 					
@@ -405,8 +413,8 @@ public class GameLevel {
 				}
 				break;
 			case CAMELOT_WALL:
-				for (int i=0; i<this.aliveAlliesChoices.size(); i++) { 
-					PlayerCharacter ally = this.aliveAlliesChoices.get(i);
+				for (int i=0; i<this.aliveAlliesArray.size(); i++) { 
+					PlayerCharacter ally = this.aliveAlliesArray.get(i);
 					
 					ally.isInvincible = true;
 					ally.invicibilityDuration = 2;
@@ -417,8 +425,8 @@ public class GameLevel {
 				}
 				break;
 			case AVALON:
-				for (int i=0; i<this.aliveAlliesChoices.size(); i++) { 
-					PlayerCharacter ally = this.aliveAlliesChoices.get(i);
+				for (int i=0; i<this.aliveAlliesArray.size(); i++) { 
+					PlayerCharacter ally = this.aliveAlliesArray.get(i);
 					
 					ally.isInvincible = true;
 					ally.invicibilityDuration = 1;
@@ -429,8 +437,8 @@ public class GameLevel {
 				}
 				break;
 			case AVALON_PROTO:
-				for (int i=0; i<this.aliveAlliesChoices.size(); i++) { 
-					PlayerCharacter ally = this.aliveAlliesChoices.get(i);
+				for (int i=0; i<this.aliveAlliesArray.size(); i++) { 
+					PlayerCharacter ally = this.aliveAlliesArray.get(i);
 					
 					ally.isInvincible = true;
 					ally.invicibilityDuration = 1;
@@ -639,7 +647,7 @@ public class GameLevel {
 		}
 	}
 	
-	private void manaAtk(PlayerCharacter character) throws Exception {
+	private void manaAtk(PlayerCharacter character) throws Exception { // mana attack
 		this.printEnemies();
 		
 		System.out.print("Choose a target (0-"+ (this.aliveEnemiesChoices.size()-1) + "): ");
@@ -731,24 +739,24 @@ public class GameLevel {
 		}
 	}
 	
-	private void calculateSkillRcg() {
-		for (int i=0; i<this.aliveAlliesChoices.size(); i++) {
-			if (this.aliveAlliesChoices.get(i).skillCD > 0) { // skill
-				this.aliveAlliesChoices.get(i).skillCD --;
+	private void calculateSkillRcg() { // calculate skill recharge of all characters after a round
+		for (int i=0; i<this.aliveAlliesArray.size(); i++) {
+			if (this.aliveAlliesArray.get(i).skillCD > 0) { // skill
+				this.aliveAlliesArray.get(i).skillCD --;
 				continue;
 			}
 			
-			this.aliveAlliesChoices.get(i).isSkillRcg = false;
-			this.aliveAlliesChoices.get(i).calculateSkillCD();
+			this.aliveAlliesArray.get(i).isSkillRcg = false;
+			this.aliveAlliesArray.get(i).calculateSkillCD();
 		}
 		
-		for (int i=0; i<this.aliveAlliesChoices.size(); i++) { // invincibility
-			if (this.aliveAlliesChoices.get(i).invicibilityDuration > 0) {
-				this.aliveAlliesChoices.get(i).invicibilityDuration--;
+		for (int i=0; i<this.aliveAlliesArray.size(); i++) { // invincibility
+			if (this.aliveAlliesArray.get(i).invicibilityDuration > 0) {
+				this.aliveAlliesArray.get(i).invicibilityDuration--;
 				continue;
 			}
 			
-			this.aliveAlliesChoices.get(i).isInvincible = false;
+			this.aliveAlliesArray.get(i).isInvincible = false;
 		}
 		
 		for (int i=0; i<this.aliveEnemiesChoices.size(); i++) { // skill
@@ -771,29 +779,29 @@ public class GameLevel {
 		}
 	}
 	
-	private void enemyRound() {
+	private void enemyRound() { // enemy's round
 		for (int i=0; i<this.aliveEnemiesChoices.size(); i++) {
 			if (!this.aliveEnemiesChoices.get(i).isSkillRcg) {
-				this.aliveEnemiesChoices.get(i).skill(this.aliveAlliesChoices);
+				this.aliveEnemiesChoices.get(i).skill(this.aliveAlliesArray);
 			} else {
-				this.aliveEnemiesChoices.get(i).attack(this.aliveAlliesChoices);
+				this.aliveEnemiesChoices.get(i).attack(this.aliveAlliesArray);
 			}
 			
 			this.ifFriendlyDead(); // check if any friendlies are dead
 		}
 	}
 	
-	private void ifFriendlyDead() {
-		for (int i=0; i<this.aliveAlliesChoices.size(); i++) {
-			if (this.aliveAlliesChoices.get(i).hp < 0 && !this.aliveAlliesChoices.get(i).isInvincible) {
-				System.out.println("=== "+this.aliveAlliesChoices.get(i).name+" has been defeated!");
-				this.aliveAlliesChoices.remove(i);
+	private void ifFriendlyDead() { // recursive function to see which allies died
+		for (int i=0; i<this.aliveAlliesArray.size(); i++) {
+			if (this.aliveAlliesArray.get(i).hp < 0 && !this.aliveAlliesArray.get(i).isInvincible) {
+				System.out.println("=== "+this.aliveAlliesArray.get(i).name+" has been defeated!");
+				this.aliveAlliesArray.remove(i);
 				this.ifFriendlyDead(); // call on itself again since size has been changed and can result in missed/out of bounds
 			}
 		}
 	}
 	
-	public void startLevel(PlayerConfig player) throws Exception {
+	public void startLevel(PlayerConfig player) throws Exception { // starts the level
 		
 		this.printDialogue(player.levelsCompleted);
 		
@@ -805,6 +813,8 @@ public class GameLevel {
 		System.out.println("\n\nChoose your character setup: ");
 		MainGame.chooseCharacters();
 		
+		this.reset(player);
+		
 		System.out.println("\n\nYour character setup: ");
 		this.printAllies(player);
 		
@@ -812,38 +822,48 @@ public class GameLevel {
 			this.roundStart(player);
 			this.round++;
 		}
+		
+		
 	}
 
-	private void roundStart(PlayerConfig player) throws Exception {
+	private void roundStart(PlayerConfig player) throws Exception { // starts the current round
+		
+		for (int i=0; i<this.aliveAlliesArray.size(); i++) {
+			this.aliveAlliesArray.get(i).isAvailable = true;
+		}
+		
 		System.out.println("Round " + this.round + ": \n\n");
 		
-		for (int j=0; j<this.aliveAlliesChoices.size(); j++) {
-			System.out.print("Enemies remaining: ");
-			System.out.println(this.aliveEnemiesChoices.size());
+		for (int j=0; j<this.aliveAlliesArray.size(); j++) {
 			
 			java.util.concurrent.TimeUnit.SECONDS.sleep(1);
-			
+			System.out.print("Enemies remaining: ");
+			System.out.println(this.aliveEnemiesChoices.size());
 			this.printEnemies();
 			
 			java.util.concurrent.TimeUnit.SECONDS.sleep(2);
 			
+			System.out.print("Allies remaining: ");
+			System.out.println(this.aliveAlliesArray.size());
 			this.printAllies(player);
 			this.handleSelection(player); // player rounds
 			
 			if (this.aliveEnemiesChoices.size() == 0) {
-				isFinished = true;
+				this.isFinished = true;
 				player.levelsCompleted++;
 				
-				for (int i = 0; i < this.aliveAlliesChoices.size(); i++) {
-					PlayerCharacter playerChar =  this.aliveAlliesChoices.get(i);
+				for (int i = 0; i < this.aliveAlliesArray.size(); i++) {
+					PlayerCharacter playerChar =  this.aliveAlliesArray.get(i);
 					System.out.println(playerChar.name + " gained 1 XP!");
 				}
 				
 				if (player.levelsCompleted % 5 == 0) {
-					for (int i = 0; i < this.aliveAlliesChoices.size(); i++) {
-						PlayerCharacter playerChar =  this.aliveAlliesChoices.get(i);
+					for (int i = 0; i < this.aliveAlliesArray.size(); i++) {
+						PlayerCharacter playerChar =  this.aliveAlliesArray.get(i);
 						playerChar.level++;
 						System.out.println(" === " + playerChar.name + " leveled up! Now they're Level " + playerChar.level);
+						playerChar.atk += 10;
+						playerChar.dfs += 2;
 					}
 				}
 				return;
@@ -852,7 +872,7 @@ public class GameLevel {
 		
 		this.enemyRound();
 		
-		if (this.aliveAlliesChoices.size() == 0) {
+		if (this.aliveAlliesArray.size() == 0) {
 			System.out.println("You failed to beat the level! You must have at least 1 character alive by the end!\n");
 
 			boolean isValidInput = false;
@@ -878,8 +898,19 @@ public class GameLevel {
 		this.calculateSkillRcg(); // calculate skill recharge of all alive characters
 	}
 	
+	private void reset(PlayerConfig player) { // resets character stats for level (restart/new level)
+		for (int i=0; i<player.characters.length; i++) {
+			PlayerCharacter character = player.characters[i];
+			character.hp = character.maxhp;
+			character.atk = character.baseatk;
+			character.dfs = character.basedfs;
+			character.mna = character.basemna;
+			character.calculateSkillCD();
+		}
+	}
+	
 	/* HELPER FUNCTIONS */
-	private void printEnemies() throws Exception {
+	private void printEnemies() throws Exception { // print enemies and add them to active array
 		this.aliveEnemiesChoices.clear();
 		String leftAlignFormat = "| %-21s | %-12s | %-25s | %-20s |%n";
 		System.out.format("+-----------------------+--------------+---------------------------+----------------------+%n");
@@ -889,7 +920,7 @@ public class GameLevel {
 			if (this.enemies[i].hp>0 || this.enemies[i].isInvincible) {
 				String property = "Atk="+this.enemies[i].atk+", Def%="+this.enemies[i].dfs+", Mna="+this.enemies[i].mna;
 				System.out.format(leftAlignFormat, this.enemies[i].name, this.enemies[i].type, property, this.enemies[i].skill);
-				System.out.format(leftAlignFormat, "", "", "Hitpoints: "+ this.enemies[i].hp + "/"+ this.enemies[i].maxhp, "Is recharging: "+this.enemies[i].isSkillRcg);
+				System.out.format(leftAlignFormat, "", "Level " + this.enemies[i].level, "Hitpoints: "+ this.enemies[i].hp + "/"+ this.enemies[i].maxhp, "Is recharging: "+this.enemies[i].isSkillRcg);
 				System.out.format(leftAlignFormat, "", "", "Is invincible: "+this.enemies[i].isInvincible, "Skill CD: "+this.enemies[i].skillCD);
 				String invindura = "";
 				if (this.enemies[i].isInvincible) {
@@ -903,8 +934,8 @@ public class GameLevel {
 		System.out.println();
 	}
 	
-	private void printAllies(PlayerConfig player) throws Exception {
-		this.aliveAlliesChoices.clear();
+	private void printAllies(PlayerConfig player) throws Exception { // print allies, add them to alive array for display
+		this.aliveAlliesArray.clear();
 		String leftAlignFormat = "| %-21s | %-12s | %-25s | %-20s |%n";
 		System.out.format("+-----------------------+--------------+---------------------------+----------------------+%n");
 		System.out.format("|      Characters       |    Class     |        Properties         |        Skill         |%n");
@@ -914,47 +945,52 @@ public class GameLevel {
 
 			String property = "Atk="+character.atk+", Def%="+character.dfs+", Mna="+character.mna;
 			System.out.format(leftAlignFormat, character.name, character.type, property, character.skill);
-			System.out.format(leftAlignFormat, "", "", "Hitpoints: "+ character.hp + "/"+ character.maxhp, "Is recharging: "+character.isSkillRcg);
+			System.out.format(leftAlignFormat, "", "Level " + character.level, "Hitpoints: "+ character.hp + "/"+ character.maxhp, "Is recharging: "+character.isSkillRcg);
 			System.out.format(leftAlignFormat, "", "", "Is invincible: "+character.isInvincible, "Skill CD: "+character.skillCD);
 			String invindura = "";
 			if (character.isInvincible) {
 				invindura = "Invicible for: " + character.invicibilityDuration;
 			}
 			System.out.format(leftAlignFormat, "", "", invindura, "");
-			this.aliveAlliesChoices.add(character);
+			this.aliveAlliesArray.add(character);
 		}
 		System.out.format("+-----------------------+--------------+---------------------------+----------------------+%n");
 		System.out.println();
 	}
 	
-	private void printAllies() throws Exception {
+	private void printAllies() throws Exception { // print alies, add them to available to attack (each can only go once per round)
 		//this.aliveAlliesChoices.clear();
+		this.availableAlliesChoices.clear();
 		String leftAlignFormat = "| %-21s | %-12s | %-25s | %-20s |%n";
 		System.out.format("+-----------------------+--------------+---------------------------+----------------------+%n");
 		System.out.format("|      Characters       |    Class     |        Properties         |        Skill         |%n");
 		System.out.format("+-----------------------+--------------+---------------------------+----------------------+%n");
-		for (int i=0; i<this.aliveAlliesChoices.size(); i++) {
-			PlayerCharacter character = this.aliveAlliesChoices.get(i);
+		for (int i=0; i<this.aliveAlliesArray.size(); i++) {
+			PlayerCharacter character = this.aliveAlliesArray.get(i);
 			if (character.isAvailable) {
 				String property = "Atk="+character.atk+", Def%="+character.dfs+", Mna="+character.mna;
 				System.out.format(leftAlignFormat, character.name, character.type, property, character.skill);
-				System.out.format(leftAlignFormat, "", "", "Hitpoints: "+ character.hp + "/"+ character.maxhp, "Is recharging: "+character.isSkillRcg);
+				System.out.format(leftAlignFormat, "", "Level " + character.level, "Hitpoints: "+ character.hp + "/"+ character.maxhp, "Is recharging: "+character.isSkillRcg);
 				System.out.format(leftAlignFormat, "", "", "Is invincible: "+character.isInvincible, "Skill CD: "+character.skillCD);
 				String invindura = "";
 				if (character.isInvincible) {
 					invindura = "Invicible for: " + character.invicibilityDuration;
 				}
 				System.out.format(leftAlignFormat, "", "", invindura, "");
+				this.availableAlliesChoices.add(character);
 			}
+
 			//if (character.hp>0 || character.isInvincible) this.aliveAlliesChoices.add(character);
 		}
 		System.out.format("+-----------------------+--------------+---------------------------+----------------------+%n");
 		System.out.println();
 	}
 
-	private void printDialogue(int id) throws Exception {
+	private void printDialogue(int id) throws Exception { // prints all dialogues needed!!!
 		
 		java.util.concurrent.TimeUnit.SECONDS.sleep(2);
+		System.out.println("Cutscene");
+		System.out.println("===================================================");
 		switch (id) {
 			case 0:				
 				System.out.println("On a fateful day, when King Arthur had put down yet another rebellion against his country, he started to head back to Camelot"
@@ -1003,12 +1039,53 @@ public class GameLevel {
 				break;
 				
 			case 49:
+				System.out.println("More and more deaths, it has blended into everyone's thoughts. Death and marauders. King Arthur stood, his hair flowing like a lion, staring at the sunset.");
+				java.util.concurrent.TimeUnit.MILLISECONDS.sleep(300);
+				System.out.println("By diverting much of his army, King Arthur has saved countless citizens. Yet the terrorists kept coming, in countless waves. To defeat them, King Arthur needs to gather his army and drive to Camelot");
+				java.util.concurrent.TimeUnit.MILLISECONDS.sleep(300);
+				System.out.println("He turned amid the dying sun, his shadows stooping under his responsibilites...");
+				break;
 				
+			case 69:
+				System.out.println("By reducing the fake king's army of terrorists, King Arthur's army has thinned its ranks, and now more grim than ever.");
+				System.out.println("King Arthur, after riding ahead for a while, spotted another large army of terrorists, yet they used a different banner this time, a banner of blood red, white, and black");
+				java.util.concurrent.TimeUnit.MILLISECONDS.sleep(300);
+				System.out.println("The bows twanged, the swords clashed, and spells flew through the ranks like birds. The fight was on!");
+				break;
+				
+			case 79:
+				System.out.println("The enemy army has been defeated. Its general surrendered amidst spears, swords, and bows cut down all of his men.");
+				java.util.concurrent.TimeUnit.MILLISECONDS.sleep(300);
+				System.out.println("He was brought to King Arthur, who sternly questioned: \"Who art thy master? Who commanded thee to kill my countrymen?\"");
+				java.util.concurrent.TimeUnit.MILLISECONDS.sleep(300);
+				System.out.println("The general grinned as he said menacingly: \"King Mordred!\"");
+				System.out.println("Everyone was taken aback. How could Mordred, Arthur's son, commit such an atrocity? But nevertheless, if it is Mordred, he must be punished, thought King Arthur.");
+				break;
+				
+			case 89:
+				System.out.println("They have broken through fierce resistance and now are within sight of the city walls. The closer they got, the worse the landscape was destroyed by Mordred's army.");
+				System.out.println("Dead bodies lined the roads, and in front of the gate to the city, Mordred has used his powers to incinerate those loyal to Arthur. Charred bodies, armour, swords, and spears lay strewn on the fields, which themselves were burning.");
+				java.util.concurrent.TimeUnit.MILLISECONDS.sleep(300);
+				System.out.println("The gate opened.");
+				java.util.concurrent.TimeUnit.MILLISECONDS.sleep(300);
+				System.out.println("King Arthur saw a giant army rolling out into the field of Camlaan, and its head rode a knight in white, black, and blood red armour wielding a blood red sword: Mordred.");
+				System.out.println("King Arthur unsheathed his sword and challenged Mordred, who laughs mercilessly and ordered his army to advance.");
+				System.out.println("There will be no choice but to fight to the end, and King Arthur's knights and army are ready. They readied their weapons, despite the massive number of enemies arranged before them");
+				break;
+				
+			case 98:
+				System.out.println("Despite terrible odds, King Arthur's soldiers have managed to defeat much of Mordred's army before falling.");
+				java.util.concurrent.TimeUnit.MILLISECONDS.sleep(300);
+				System.out.println("Although King Arthur fought hard, he was not able to stop Mordred using his powers to incinerate both his and Arthur's remaining armies."
+						+ "\nBodies piled to form hills, spears, swords, and arrows lay embedded within King Arthur's valiant warriors.");
+				System.out.println("The final battle has come, and King Arthur knew it will be the last.");
+				java.util.concurrent.TimeUnit.MILLISECONDS.sleep(300);
 				break;
 				
 			default:
 				break;
 		}
+		System.out.println("===================================================");
 	}
 	
 
@@ -1016,3 +1093,11 @@ public class GameLevel {
 		this.name = "Init";
 	}
 }
+
+/*
+ * flowchart: too much
+ * 
+ * @param
+ * 
+ * 
+ * */

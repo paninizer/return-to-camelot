@@ -44,7 +44,9 @@ public class MainGame {
 		LevelList levels = new LevelList();
 		levels.init(player);
 		
-		levels.levels[0].startLevel(player);
+		for (int i=0; i<levels.levels.length; i++) {
+			levels.levels[i].startLevel(player);
+		}
 	}
 	
 	
@@ -109,6 +111,7 @@ public class MainGame {
 	
 	static void chooseCharacters() throws Exception {
 		for (int i=0; i<4; i++) {
+			System.out.println("\n\n");
 			HelperPrint(choice[i]);
 			int returned = handleSelection(choice[i], "Select a character (0-3): ", "number", choice[i].length);
 			
@@ -256,3 +259,44 @@ public class MainGame {
 		return true;
 	}
 }
+
+/* flow chart (simple):
++------------------+
+|    MainGame      |
++------------------+
+        |
+        v
++------------------+
+|   initSave()     |
++------------------+
+        |
+        v
++------------------+
+|   HelperPrint()  |
++------------------+
+        |
+        v
++------------------+
+| initCharacterArray()|
++------------------+
+        |
+        v
++------------------+
+| chooseCharacters()|
++------------------+
+        |
+        v
++------------------+
+|    runGame()     |
++------------------+
+        |
+        v
++------------------+
+|  LevelList.init()|
++------------------+
+        |
+        v
++------------------+
+|  levels.levels[0].startLevel() |
++------------------+
+*/

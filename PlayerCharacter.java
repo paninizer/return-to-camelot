@@ -58,13 +58,9 @@ public class PlayerCharacter {
 		this.name = name;
 		this.level = level;
 		this.maxhp = hp;
-		this.hp = this.maxhp;
 		this.baseatk = atk;
 		this.basedfs = dfs;
 		this.basemna = mna;
-		this.atk = this.baseatk;
-		this.dfs = this.basedfs;
-		this.mna = this.basemna;
 		this.skill = skill;
 		this.type = type;
 	}
@@ -73,13 +69,9 @@ public class PlayerCharacter {
 	public PlayerCharacter(String name, int hp, int atk, int dfs, int mna, Skills skill, Classes type) {
 		this.name = name;
 		this.maxhp = hp;
-		this.hp = this.maxhp;
 		this.baseatk = atk;
 		this.basedfs = dfs;
 		this.basemna = mna;
-		this.atk = this.baseatk;
-		this.dfs = this.basedfs;
-		this.mna = this.basemna;
 		this.skill = skill;
 		this.type = type;
 	}
@@ -165,7 +157,7 @@ public class PlayerCharacter {
 		
 		double multiplier = 1.00;
 		
-		if (this.type == Classes.SHIELDER) return 0.75;
+		if (this.type == Classes.SHIELDER) return 0.70;
 		if (this.type == Classes.SOVEREIGN) return 0.50;
 		
 		if (this.type == Classes.LANCER) {
@@ -304,3 +296,62 @@ public class PlayerCharacter {
 		System.out.println("=== "+target.name+" is dealt "+dmg+" damage!");
 	}
 }
+
+
+/*
+ 
+ flowchart:
+ 
+ same layer variables or functions w/ no relations are just | to indicate that they belong to the class
+ with the top variable/enum having the v to represent direct hiearcy
+ 
+  +------------------+
+  | PlayerCharacter  |
+  +------------------+
+          |
+          v
+  +------------------+
+  |  enum Skills     |
+  +------------------+
+          |
+          |
+  +------------------+
+  |  enum Classes    |
+  +------------------+
+          |
+          |
+  +------------------+
+  |  name, level, hp, atk, dfs, mna, skill, type |
+  +------------------+
+          |
+          |
+  +------------------+
+  | PlayerCharacter()|
+  +------------------+
+          |
+		  v
+  +------------------+
+  | initialize variables
+  +------------------+
+		|
+		|
+  +------------------+
+  |     calculateSkillCD() |
+  +------------------+
+		|
+		|
+  +------------------+
+  | calculateDMG()   |
+  +------------------+
+        |
+        |  
+  +------------------+
+  |      skill()      |
+  +------------------+
+        |
+        |
+  +------------------+
+  |     attack()     |
+  +------------------+
+
+  */
