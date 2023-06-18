@@ -1083,6 +1083,7 @@ public class GameLevel {
 				break;
 				
 			default:
+				System.out.println("King Arthur proceeds on with his journey, and he encountered more enemies.");
 				break;
 		}
 		System.out.println("===================================================");
@@ -1090,14 +1091,19 @@ public class GameLevel {
 	
 
 	public GameLevel() { // overload initializing first save
-		this.name = "Init";
+		this.name = "Init"; // innit?
 	}
 }
 
 /*
  * flowchart: too much
  * 
+ * simplfied not-a-flowchart
  * @param
+ * run level -> init enemies -> print any dialogue/cutscenes -> start the rounds -> handle user input -> handle events (character deaths, skills, etc)
+ * -> enemy round -> handle events (character deaths, skills, etc)
+ * -> round end, if not finished begin round n+1
  * 
- * 
+ * @info
+ * coded by the one and only owner of the GitHub repo... yea
  * */

@@ -358,9 +358,10 @@ public class MainGame {
 +------------------+
 |  LevelList.init()|
 +------------------+
-        |
+        | for each level of levels.levels
         v
 +------------------+
-|  levels.levels[0].startLevel() |
+|  levels.levels[n].startLevel() |
 +------------------+
+		-> gamelevel class then
 */
