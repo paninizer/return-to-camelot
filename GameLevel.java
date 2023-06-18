@@ -449,6 +449,36 @@ public class GameLevel {
 					}
 				}
 				break;
+			case CURSED_ONSET:
+				for (int i=0; i<this.aliveAlliesArray.size(); i++) { 
+					PlayerCharacter ally = this.aliveAlliesArray.get(i);
+					
+					ally.isInvincible = false;
+					ally.invicibilityDuration = 0;
+					
+					if (ally.hp > 50) {
+						ally.hp -= 45;
+						ally.atk += 50 * multiplier;
+					}
+					if (ally.dfs > 25) ally.dfs -= 25;
+				}
+				break;
+			case CURSED_ONSET_PROTO: {
+				for (int i=0; i<this.aliveAlliesArray.size(); i++) { 
+					PlayerCharacter ally = this.aliveAlliesArray.get(i);
+					
+					ally.isInvincible = false;
+					ally.invicibilityDuration = 0;
+					
+					if (ally.hp > 60) {
+						ally.hp -= 55;
+						ally.atk += 70 * multiplier;
+					}
+					if (ally.dfs > 25) ally.dfs -= 25;
+					if (ally.mna > 50) ally.mna -= 50;
+				}
+				break;
+			}
 				
 			// affects only 1 ally / enemy skill cases
 			case RHONGOMYNIAD:
@@ -862,8 +892,10 @@ public class GameLevel {
 						PlayerCharacter playerChar =  this.aliveAlliesArray.get(i);
 						playerChar.level++;
 						System.out.println(" === " + playerChar.name + " leveled up! Now they're Level " + playerChar.level);
-						playerChar.atk += 10;
-						playerChar.dfs += 2;
+						playerChar.baseatk += 10;
+						playerChar.basedfs += 2;
+						playerChar.basemna += 15;
+						playerChar.maxhp += 50;
 					}
 				}
 				return;
@@ -1098,8 +1130,10 @@ public class GameLevel {
 /*
  * flowchart: too much
  * 
- * simplfied not-a-flowchart
+ * simplfied not-a-flowchart:
  * @param
+ * 
+ * 
  * run level -> init enemies -> print any dialogue/cutscenes -> start the rounds -> handle user input -> handle events (character deaths, skills, etc)
  * -> enemy round -> handle events (character deaths, skills, etc)
  * -> round end, if not finished begin round n+1
