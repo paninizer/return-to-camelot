@@ -47,6 +47,70 @@ public class MainGame {
 		for (int i=0; i<levels.levels.length; i++) {
 			levels.levels[i].startLevel(player);
 		}
+		
+		// ending, after last level
+		System.out.println("\n\n\n\n======");
+		System.out.println("King Arthur and Mordred duelled and duelled, amidst the mountains of corpses and swords.");
+		System.out.println("Blades of flames, one blue and one red, clashed against the night.");
+		System.out.println("Yet, at the beginning of dawn, the duel was decided. King Arthur, taking a chance to grab his spear, impaled Mordred.");
+		System.out.println("Though King Arthur was mortally wounded, he walked off into the distance, followed by Bedivere.");
+		System.out.println("They come to a stop under a tree, and King Arthur sensed his impending doom.");
+		System.out.println("\"Go, Bedivere,\" he handed Bedivere Excalibur, \"return this holy sword to the Lady of the Lake.\"");
+		System.out.println("Bedivere took the sword, and stood by the lake, hesitating to separate the holy sword from his king.");
+		
+		String input;
+		boolean isValidInput = false;
+		
+		while (!isValidInput) {
+			System.out.print("Throw the sword in the lake? (Y/N): ");
+			input = br.readLine().toUpperCase();
+			if (input.equals("Y") || input.equals("YES")) {
+				System.out.println("\nBedivere, weeping, tossed the sword into the lake. It was instaly swallowed up.");
+				System.out.println("He hurried back to report, but found King Arthur already dead. Bedivere stood, mourning his king, then walked away towards the edge of the forest");
+				System.out.println();
+				
+				isValidInput = true;
+				continue;
+			}
+			if (input.equals("N") || input.equals("NO")) {
+				System.out.println("\nBedivere did not wish to return the sword, so he brought it back and laid it at King Arthur's corpse.");
+				System.out.println("Bedivere stood, mourning his king, then walked away towards the edge of the forest.");
+				System.out.println("The sword started to glow in its sheath, casting an ominous shadow at King Arthur's body...");
+				System.out.println("To be continued....");
+				System.out.println();
+				
+				isValidInput = true;
+				continue;
+			}
+			
+			System.out.println("Please input only Y or N!!!");
+		}
+		
+		System.out.println("\n\n\n\n\n");
+		System.out.println("'########::'########:'########:'##::::'##:'########::'##::: ##:          \r\n"
+							+ " ##.... ##: ##.....::... ##..:: ##:::: ##: ##.... ##: ###:: ##:          \r\n"
+							+ " ##:::: ##: ##:::::::::: ##:::: ##:::: ##: ##:::: ##: ####: ##:          \r\n"
+							+ " ########:: ######:::::: ##:::: ##:::: ##: ########:: ## ## ##:          \r\n"
+							+ " ##.. ##::: ##...::::::: ##:::: ##:::: ##: ##.. ##::: ##. ####:          \r\n"
+							+ " ##::. ##:: ##:::::::::: ##:::: ##:::: ##: ##::. ##:: ##:. ###:          \r\n"
+							+ " ##:::. ##: ########:::: ##::::. #######:: ##:::. ##: ##::. ##:          \r\n"
+							+ "..:::::..::........:::::..::::::.......:::..:::::..::..::::..::          \r\n"
+							+ "'########::'#######::                                                    \r\n"
+							+ "... ##..::'##.... ##:                                                    \r\n"
+							+ "::: ##:::: ##:::: ##:                                                    \r\n"
+							+ "::: ##:::: ##:::: ##:                                                    \r\n"
+							+ "::: ##:::: ##:::: ##:                                                    \r\n"
+							+ "::: ##:::: ##:::: ##:                                                    \r\n"
+							+ "::: ##::::. #######::                                                    \r\n"
+							+ ":::..::::::.......:::                                                    \r\n"
+							+ ":'######:::::'###::::'##::::'##:'########:'##::::::::'#######::'########:\r\n"
+							+ "'##... ##:::'## ##::: ###::'###: ##.....:: ##:::::::'##.... ##:... ##..::\r\n"
+							+ " ##:::..:::'##:. ##:: ####'####: ##::::::: ##::::::: ##:::: ##:::: ##::::\r\n"
+							+ " ##:::::::'##:::. ##: ## ### ##: ######::: ##::::::: ##:::: ##:::: ##::::\r\n"
+							+ " ##::::::: #########: ##. #: ##: ##...:::: ##::::::: ##:::: ##:::: ##::::\r\n"
+							+ " ##::: ##: ##.... ##: ##:.:: ##: ##::::::: ##::::::: ##:::: ##:::: ##::::\r\n"
+							+ ". ######:: ##:::: ##: ##:::: ##: ########: ########:. #######::::: ##::::\r\n"
+							+ ":......:::..:::::..::..:::::..::........::........:::.......::::::..:::::");
 	}
 	
 	
